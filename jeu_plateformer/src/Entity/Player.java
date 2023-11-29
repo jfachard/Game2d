@@ -2,10 +2,8 @@ package src.Entity;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
+import src.utilz.LoadSave;
 
 import static src.utilz.Constants.PlayerConstants.*;
 
@@ -18,8 +16,8 @@ public class Player extends Entity {
     private boolean left, up, right, down;
     private float playerSpeed = 4.0f;
     
-    public Player(float x, float y){
-        super(x, y);
+    public Player(float x, float y, int width, int height){
+        super(x, y, width, height);
         loadAnimation();
     }
 
@@ -31,7 +29,7 @@ public class Player extends Entity {
     }
 
     public void render(Graphics g){
-        g.drawImage(animations[playerAction][aniIndex], (int)x, (int)y, 128, 128,null);
+        g.drawImage(animations[playerAction][aniIndex], (int)x, (int)y, width*2, height*2,null);
     }
 
     private void updateAniTick() {
@@ -95,18 +93,14 @@ public class Player extends Entity {
 
     private void loadAnimation() {
 
-        File fimg = new File("./res/satyr_Sheet.png");
-        try {
-            BufferedImage image = ImageIO.read(fimg);
-            animations = new BufferedImage[5][9];
+        BufferedImage image = LoadSave.getSpriteAtlas(LoadSave.PLAYER_ATLAS);
 
-            for(int j = 0; j < animations.length; ++j){
-                for(int i = 0; i < animations[j].length; ++i){
-                    animations[j][i] = image.getSubimage(i*32, j*32, 32, 32);
-                }
+        animations = new BufferedImage[5][9];
+
+        for(int j = 0; j < animations.length; ++j){
+            for(int i = 0; i < animations[j].length; ++i){
+                animations[j][i] = image.getSubimage(i*32, j*32, 32, 32);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
     }
